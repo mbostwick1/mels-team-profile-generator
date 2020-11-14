@@ -10,6 +10,9 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const teamMembers = [];
+const emptyId = [];
+
 const questions = [
   {
     type: "input",
@@ -31,21 +34,128 @@ const questions = [
     name: "officeNumber",
     message: "Enter manager's office number.",
   },
-
 ];
 
 function manager() {
-    // console.log("Start Questions");
-    inquirer.prompt(questions).then(function(data){
-        console.log(data.managerName);
-        console.log(data.managerId);
-        console.log(data.managerEmail);
-        console.log(data.officeNumber);
-    });
-};
+  // console.log("Start Questions");
+  inquirer.prompt(questions).then(function (data) {
+    // console.log(data.managerName);
+    // console.log(data.managerId);
+    // console.log(data.managerEmail);
+    // console.log(data.officeNumber);
+    const manager = new Manager(
+      data.managerName,
+      data.managerId,
+      data.managerEmail,
+      data.officeNumber
+    );
+    teamMembers.push(manager);
+    emptyId.push(data.managerId);
+    team();
+  });
+}
 
 manager();
 
+function team() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "teamMember",
+        message: "Choose team member.",
+        choices: ["Engineer", "Intern", "Finished adding team members."],
+      },
+    ])
+    .then(function (data) {
+      if (data.teamMember === "Engineer") {
+        engineer();
+      } else if (data.teamMember === "Intern") {
+        intern();
+      } else outputTeam();
+    });
+}
+
+function engineer() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "engineerName",
+        message: "Enter engineer's name.",
+      },
+      {
+        type: "input",
+        name: "engineerId",
+        message: "Enter engineer's ID.",
+      },
+      {
+        type: "input",
+        name: "engineerEmail",
+        message: "Enter engineer's email.",
+      },
+      {
+        type: "input",
+        name: "engineerGitHub",
+        message: "Enter engineer's GitHub.",
+      },
+    ])
+    .then(function (data) {
+      const engineer = new Engineer(
+        data.engineerName,
+        data.engineerId,
+        data.engineerEmail,
+        data.engineerGitHub
+      );
+      teamMembers.push(engineer);
+      emptyId.push(data.engineerId);
+      team();
+    });
+}
+
+function intern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "internName",
+        message: "Enter intern's name.",
+      },
+      {
+        type: "input",
+        name: "internId",
+        message: "Enter intern's ID.",
+      },
+      {
+        type: "input",
+        name: "internEmail",
+        message: "Enter intern's email.",
+      },
+      {
+        type: "input",
+        name: "internSchool",
+        message: "Enter intern's school.",
+      },
+    ])
+    .then(function (data) {
+      const intern = new Intern(
+        data.internName,
+        data.internId,
+        data.internEmail,
+        data.internSchool
+      );
+      teamMembers.push(intern);
+      emptyId.push(data.internId);
+      team();
+    });
+}
+
+function outputTeam() {
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR);
+  }
+  fs.writeFileSync(outputPath, render(teamMembers), "utf-8");
+}
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
