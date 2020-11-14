@@ -11,16 +11,40 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 const questions = [
-    {
-        type: "input",
-        name: "name",
-        message: "What is your name?"
-    }
+  {
+    type: "input",
+    name: "managerName",
+    message: "Enter manager's name.",
+  },
+  {
+    type: "input",
+    name: "managerId",
+    message: "Enter manager's ID.",
+  },
+  {
+    type: "input",
+    name: "managerEmail",
+    message: "Enter manager's email.",
+  },
+  {
+    type: "input",
+    name: "officeNumber",
+    message: "Enter manager's office number.",
+  },
+
 ];
 
-inquirer.prompt(questions).then(function(data){
-    console.log(data.name);
-})
+function manager() {
+    // console.log("Start Questions");
+    inquirer.prompt(questions).then(function(data){
+        console.log(data.managerName);
+        console.log(data.managerId);
+        console.log(data.managerEmail);
+        console.log(data.officeNumber);
+    });
+};
+
+manager();
 
 
 // Write code to use inquirer to gather information about the development team members,
